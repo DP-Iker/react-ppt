@@ -1,7 +1,8 @@
 import { ChangeEvent, FC, ReactElement, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Inicio: FC = (): ReactElement => {
-
+const navigate = useNavigate();
 
         const [nombre, setNombre] = useState("");
         const [foto, setFoto] = useState<string | null>(null);
@@ -43,6 +44,8 @@ onChange={escogerNombre}
 <img src={foto} alt="Foto de perfil" width={150} />
 </div>
 )}
+
+<button onClick={() => navigate("/juego")}>Ir al juego</button>
 </div>
 
     };
