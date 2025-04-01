@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 // Definir el tipo de datos del contexto
-interface DataContext {
+interface DataContextType {
   playerName: string;
   setPlayerName: (name: string) => void;
   image: string | null;
@@ -9,4 +9,4 @@ interface DataContext {
 }
 
 // Crear el contexto con valores iniciales
-export const DataContext = createContext<DataContext | undefined>(undefined);
+export const DataContext = createContext<DataContextType | undefined>(undefined);
