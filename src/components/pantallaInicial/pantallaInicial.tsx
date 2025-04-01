@@ -1,14 +1,16 @@
-import { ChangeEvent, FC, ReactElement, useState } from "react";
+import { ChangeEvent, FC, ReactElement, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../context/DataContext";
 
 const Inicio: FC = (): ReactElement => {
 const navigate = useNavigate();
+const dataContext = useContext(DataContext);
 
-        const [nombre, setNombre] = useState("");
+
         const [foto, setFoto] = useState<string | null>(null);
 
         const escogerNombre = (e: ChangeEvent<HTMLInputElement>) => {
-        setNombre(e.target.value);
+        dataContext?.setPlayerName(e.target.value);
         };
 
         const escogerFoto = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,6 +24,7 @@ const navigate = useNavigate();
 
               reader.readAsDataURL(archivo); // Convierte a base64 para mostrar imagen
             }
+            
 };
 
 
@@ -29,7 +32,7 @@ const navigate = useNavigate();
 return <div>
 <h2>Escribe tu nombre</h2>
 <input type="text" placeholder="Tu nombre"
-value= {nombre}
+value= {dataContext?.playerName}
 onChange={escogerNombre}
 />
 
@@ -40,7 +43,7 @@ onChange={escogerNombre}
 
 {foto && (
 <div>
-<p>¡Hola {nombre}!</p>
+<p>¡Hola {dataContext?.playerName}!</p>
 <img src={foto} alt="Foto de perfil" width={150} />
 </div>
 )}
