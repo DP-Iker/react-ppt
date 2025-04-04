@@ -1,43 +1,137 @@
-import { FC, ReactElement, useContext } from "react";
-import "./botonesPPT.css";
-import { DataContext } from "../../context/DataContext";
+import React, { useState, useEffect } from "react";
+import styles from "./botones.module.css"; // asegúrate de tener las clases en este CSS
 
-const Opciones = ["💎", "🧻", "✂"] as const;
-type Opcion = (typeof Opciones)[number];
+const opciones = {
+    piedra: "💎 Piedra",
+    papel: "🧻 Papel",
+    tijera: "✂ Tijera",
+} as const;
 
-const Juego: FC = (): ReactElement => {
-    const dataContext = useContext(DataContext);
-    const nombreJugador = dataContext?.playerName;
+type Opcion = keyof typeof opciones;
 
-    const randomOpcionesMaquina = (): Opcion =>
-        Opciones[Math.floor(Math.random() * Opciones.length)];
+const BotonesJuego: React.FC = () => {
+    const [resultadoJugador, setResultadoJugador] = useState(0);
+    const [resultadoPC, setResultadoPC] = useState(0);
+    const [round, setRound] = useState(0);
+    const [isBestOfThree, setIsBestOfThree] = useState(true);
+    const [tiradas, setTiradas] = useState<string[]>([]);
+    const [finalizado, setFinalizado] = useState(false);
+    const [resultadoFinal, setResultadoFinal] = useState("");
 
-    const compararOpciones = (eleccionJugador: Opcion, eleccionMaquina: Opcion): string => {
-        if (eleccionJugador === eleccionMaquina) return "Es un Empate";
+    const play = (opcionJugador: Opcion) => {
+        if (isGameOver()) return;
 
-        const ganaJugador =
-            (eleccionJugador === "💎" && eleccionMaquina === "✂") ||
-            (eleccionJugador === "🧻" && eleccionMaquina === "💎") ||
-            (eleccionJugador === "✂" && eleccionMaquina === "🧻");
+        const opcionesInternas: Opcion[] = ["piedra", "papel", "tijera"];
+        const opcionPC = opcionesInternas[Math.floor(Math.random() * opcionesInternas.length)];
 
-        return ganaJugador ? `¡${nombreJugador} Gana!` : "¡Máquina Gana!";
+        let resultText = "";
+        // let resultadoExtra = "";
+
+        let newJugador = resultadoJugador;
+        let newPC = resultadoPC;
+        const nuevaRonda = round + 1;
+
+        if (opcionJugador === opcionPC) {
+            resultText = `¡<span class="player-empate">Empate</span>! Ambos eligieron ${opciones[opcionJugador]}`;
+        } else if (
+            (opcionJugador === "piedra" && opcionPC === "tijera") ||
+            (opcionJugador === "papel" && opcionPC === "piedra") ||
+            (opcionJugador === "tijera" && opcionPC === "papel")
+        ) {
+            resultText = `¡<span class="player-text">Ganaste</span>! ${opciones[opcionJugador]} vence a ${opciones[opcionPC]}`;
+            newJugador++;
+        } else {
+            resultText = `¡<span class="player-text2">Perdiste</span>! ${opciones[opcionPC]} vence a ${opciones[opcionJugador]}`;
+            newPC++;
+        }
+
+        const tiradaHTML = `
+            <hr style="border: 1px solid blue; margin: 10px 0;">
+            <div class="roundResult">
+                <p><span class="player-text">Jugador</span>: ${opciones[opcionJugador]} 🤼‍♂️ 
+                <span class="player-text2">Ordenador</span>: ${opciones[opcionPC]}</p>
+                <p>${resultText}</p>
+            </div>`;
+
+        setTiradas((prev) => [...prev, tiradaHTML]);
+        setResultadoJugador(newJugador);
+        setResultadoPC(newPC);
+        setRound(nuevaRonda);
+
+        if (isBestOfThree && nuevaRonda === 3) {
+            finishGame(newJugador, newPC);
+        }
     };
 
-    const manejarJugador = (eleccionJugador: Opcion) => {
-        const eleccionMaquina = randomOpcionesMaquina();
-        const resultado = compararOpciones(eleccionJugador, eleccionMaquina);
-        console.log(`${nombreJugador}: ${eleccionJugador} - Máquina: ${eleccionMaquina} → ${resultado}`);
+    const toggleMode = () => setIsBestOfThree(!isBestOfThree);
+
+    const finishGame = (jugador: number, pc: number) => {
+        setFinalizado(true);
+        if (jugador > pc) setResultadoFinal("🏆 ¡Felicidades! Has ganado el juego.");
+        else if (jugador < pc) setResultadoFinal("💻 El ordenador ha ganado el juego.");
+        else setResultadoFinal("⚔ ¡Empate final! ⚔");
     };
+
+    const reiniciarJuego = () => {
+        setResultadoJugador(0);
+        setResultadoPC(0);
+        setRound(0);
+        setTiradas([]);
+        setFinalizado(false);
+        setResultadoFinal("");
+    };
+
+    const isGameOver = () => isBestOfThree && round === 3;
+
+    // Auto scroll y highlight
+    useEffect(() => {
+        const contenedor = document.getElementById("tiradasContainer");
+        if (contenedor) contenedor.scrollTop = contenedor.scrollHeight;
+    }, [tiradas]);
 
     return (
-        <div className="Juego">
-                {dataContext?.image && <img src={dataContext.image} alt="Foto" />}
-            <h2>{nombreJugador} vs Máquina</h2>
-            <button onClick={() => manejarJugador("💎")}>Piedra</button>
-            <button onClick={() => manejarJugador("🧻")}>Papel</button>
-            <button onClick={() => manejarJugador("✂")}>Tijeras</button>
+        <div>
+            <h1 className={!finalizado ? "" : styles.oculto}>¡Juego Piedra, Papel o Tijera!</h1>
+
+            {!finalizado && (
+                <div className={styles.botonesContenedor}>
+                    <button onClick={() => play("piedra")}>💎 Piedra</button>
+                    <button onClick={() => play("papel")}>🧻 Papel</button>
+                    <button onClick={() => play("tijera")}>✂ Tijera</button>
+                    <button onClick={toggleMode}>
+                        Modo: {isBestOfThree ? "Mejor de 3" : "Ilimitado"}
+                    </button>
+                    <button onClick={() => finishGame(resultadoJugador, resultadoPC)}>Finalizar partida</button>
+                </div>
+            )}
+
+            <button
+                onClick={reiniciarJuego}
+                className={`${styles.reiniciarBtn} ${!finalizado ? styles.oculto : ""} ${
+                    !isBestOfThree ? styles["reiniciar-izquierda"] : ""
+                }`}
+            >
+                Reiniciar Juego
+            </button>
+
+            <div id="tiradasContainer">
+                <div
+                    id="resultadoTirada"
+                    dangerouslySetInnerHTML={{ __html: tiradas.join("") }}
+                ></div>
+            </div>
+
+            <div id="puntuacion">
+                Puntuación: <br />
+                <span className="player-text">Jugador</span>: {resultadoJugador} |
+                <span className="player-text2"> Ordenador</span>: {resultadoPC}
+            </div>
+
+            <div id="resultadoFinalContenedor">
+                <div id="resultadoFinal">{resultadoFinal}</div>
+            </div>
         </div>
     );
 };
 
-export default Juego;
+export default BotonesJuego;
