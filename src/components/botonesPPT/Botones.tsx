@@ -1,4 +1,4 @@
-import { FC, ReactElement, useContext, useEffect, useState } from "react";
+import { FC, ReactElement, useContext } from "react";
 import "./botonesPPT.css";
 import { DataContext } from "../../context/DataContext";
 

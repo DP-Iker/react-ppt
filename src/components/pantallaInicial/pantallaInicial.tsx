@@ -1,7 +1,7 @@
 import { FC, ReactElement, useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "../../context/DataContext";
-import { handleImageChange } from "../../utils/handleImage";
+// import { handleImageChange } from "../../utils/handleImage";
 import styles from "./PantallaInicial.module.css";
 import Webcam from "react-webcam";
 
@@ -24,7 +24,7 @@ const Inicio: FC = (): ReactElement => {
     if (dataContext) {
       dataContext.setPlayerName(nombre);
       dataContext.setImage(screenshot);
-      navigate("/a");
+      navigate("/juego");
     }
   };
 
@@ -45,11 +45,11 @@ const Inicio: FC = (): ReactElement => {
         height={300}
       />
       <button onClick={capturePhoto}>Tomar Foto</button>
-      <input
+      {/* <input
         type="file"
         accept="image/*"
         onChange={(e) => handleImageChange(e, dataContext!.setImage)}
-      />
+      /> */}
       {screenshot && (
         <div className="mt-4">
           <h3>Imagen Capturada:</h3>
