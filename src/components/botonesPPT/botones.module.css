@@ -1,0 +1,10 @@
+.divMain {
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    color:rgb(154, 4, 154);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+
+}

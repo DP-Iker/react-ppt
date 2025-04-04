@@ -13,9 +13,9 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <DataProvider>
         <div className="cosas">
-        <img className="piedra-papel-tijera.gif" src={logo} alt="piedra-papel-tijera.gif" />
+        <img className="gif" src="/piedra-papel-tijera.gif" alt="piedra-papel-tijera" />
           <h1>PIEDRA PAPEL TIJERA</h1>
-          <img className="piedra-papel-tijera.gif" src={logo} alt="piedra-papel-tijera.gif" />
+          <img className="gif" src="/piedra-papel-tijera.gif" alt="piedra-papel-tijera" />
         </div>
         <App />
       </DataProvider>
