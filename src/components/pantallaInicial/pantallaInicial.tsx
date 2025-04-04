@@ -30,7 +30,7 @@ const Inicio: FC = (): ReactElement => {
 
   return (
     <div className={styles.divMain}>
-      <h2>Escribe tu nombre</h2>
+      <h2 className={styles.divh1}>Escribe tu nombre</h2>
       <input
         type="text"
         placeholder="Tu nombre"
