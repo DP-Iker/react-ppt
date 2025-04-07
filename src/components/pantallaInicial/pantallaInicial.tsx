@@ -12,6 +12,7 @@ const Inicio: FC = (): ReactElement => {
   const webcamRef = useRef<Webcam>(null);
   const [screenshot, setScreenshot] = useState<string | null>(null);
 
+
   // Hace una captua de la webcam y la guarda en el hook de state
   const capturePhoto = () => {
     const imageSrc = webcamRef.current?.getScreenshot();
@@ -30,35 +31,34 @@ const Inicio: FC = (): ReactElement => {
 
   return (
     <div className={styles.divMain}>
-      <h2 className={styles.divh1}>Escribe tu nombre</h2>
-      <input
-        type="text"
-        placeholder="Tu nombre"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-      />
+    <h2 className={styles.divh1}>Escribe tu nombre</h2>
+    
+    <input
+      type="text"
+      placeholder="Tu nombre"
+      value={nombre}
+      onChange={(e) => setNombre(e.target.value)}
+    />
+  
+    <div className={styles.camContainer}>
       <Webcam
         ref={webcamRef}
         audio={false}
         screenshotFormat="image/jpeg"
-        width={400}
-        height={300}
+        width={300}
+        height={220}
+        className={styles.webcam}
       />
-      <button onClick={capturePhoto}>Tomar Foto</button>
-      {/* <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => handleImageChange(e, dataContext!.setImage)}
-      /> */}
       {screenshot && (
-        <div className="mt-4">
-          <h3>Imagen Capturada:</h3>
+        <div className={styles.preview}>
           <img src={screenshot} alt="Screenshot" />
         </div>
       )}
-      <button onClick={enviarDatos}>Botón</button>
     </div>
+  
+    <button onClick={capturePhoto}>Tomar Foto</button>
+    <button onClick={enviarDatos}>Botón</button>
+  </div>
   );
 };
-
 export default Inicio;
